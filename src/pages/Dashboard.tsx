@@ -68,10 +68,18 @@ const Dashboard = () => {
   return (
     <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full bg-gray-50">
-        {/* Sidebar - reduced width */}
-        <Sidebar className="border-r border-gray-200 z-30" style={{width: 'var(--sidebar-width)', '--sidebar-width': '14rem'} as React.CSSProperties}>
+        {/* Sidebar - responsive width */}
+        <Sidebar 
+          className="border-r border-gray-200 z-30" 
+          style={{
+            width: 'var(--sidebar-width)', 
+            '--sidebar-width': isMobile ? '4.5rem' : '14rem'
+          } as React.CSSProperties}
+        >
           <SidebarHeader className="p-4 border-b">
-            <h1 className="text-xl font-semibold">Instagram</h1>
+            <h1 className={`${isMobile ? 'text-sm' : 'text-xl'} font-semibold truncate`}>
+              {isMobile ? 'IG' : 'Instagram'}
+            </h1>
           </SidebarHeader>
           <SidebarContent>
             <SidebarMenu>
@@ -82,7 +90,7 @@ const Dashboard = () => {
                       isActive ? "text-black font-medium" : "text-gray-600"
                     }>
                       {link.icon}
-                      <span>{link.label}</span>
+                      <span className={`${isMobile ? 'hidden' : 'inline-block'}`}>{link.label}</span>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -94,7 +102,7 @@ const Dashboard = () => {
         {/* Main content */}
         <div className="flex-1 flex flex-col overflow-hidden">
           {/* Top navigation */}
-          <div className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between sticky top-0 z-20">
+          <div className="bg-white border-b border-gray-200 py-3 px-2 sm:px-6 flex items-center justify-between sticky top-0 z-20">
             <div className="relative w-full max-w-xs">
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
@@ -103,7 +111,7 @@ const Dashboard = () => {
                 className="w-full pl-10 pr-4 py-2 rounded-full bg-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
               />
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4">
               <Button 
                 variant="outline" 
                 size="icon" 
@@ -124,29 +132,30 @@ const Dashboard = () => {
             {/* Feed with its own scroll area */}
             <div className="flex-1 overflow-hidden">
               <ScrollArea className="h-[calc(100vh-4rem)]">
-                <div className="max-w-xl mx-auto px-4 py-6">
+                <div className="w-full max-w-md sm:max-w-xl mx-auto px-2 sm:px-4 py-4 sm:py-6">
                   {/* Create post button */}
-                  <Card className="mb-6 shadow-sm">
-                    <CardContent className="p-4">
+                  <Card className="mb-4 sm:mb-6 shadow-sm">
+                    <CardContent className="p-3 sm:p-4">
                       <Button className="w-full flex items-center justify-center gap-2">
                         <PlusSquare className="h-5 w-5" />
-                        Create Post
+                        <span className="hidden sm:inline">Create Post</span>
+                        <span className="sm:hidden">Post</span>
                       </Button>
                     </CardContent>
                   </Card>
                   
                   {/* Stories */}
-                  <Card className="mb-6 shadow-sm">
-                    <CardContent className="p-4">
-                      <div className="flex space-x-4 overflow-x-auto pb-2">
+                  <Card className="mb-4 sm:mb-6 shadow-sm">
+                    <CardContent className="p-3 sm:p-4">
+                      <div className="flex space-x-3 sm:space-x-4 overflow-x-auto pb-2 scrollbar-none">
                         {[1, 2, 3, 4, 5, 6].map((i) => (
-                          <div key={i} className="flex flex-col items-center">
-                            <div className="w-16 h-16 rounded-full bg-gradient-to-r from-pink-500 to-orange-400 p-0.5">
+                          <div key={i} className="flex flex-col items-center flex-shrink-0">
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-pink-500 to-orange-400 p-0.5">
                               <div className="w-full h-full bg-white rounded-full p-0.5">
                                 <div className="w-full h-full bg-gray-200 rounded-full"></div>
                               </div>
                             </div>
-                            <span className="text-xs mt-1">user_{i}</span>
+                            <span className="text-xs mt-1 truncate w-14 sm:w-16 text-center">user_{i}</span>
                           </div>
                         ))}
                       </div>
@@ -154,26 +163,31 @@ const Dashboard = () => {
                   </Card>
                   
                   {/* Posts with improved structure */}
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {posts.map((post, idx) => (
                       <Card key={idx} className="overflow-hidden shadow-sm">
-                        <CardHeader className="p-4 flex items-center space-x-3">
-                          <div className="w-8 h-8 rounded-full bg-gray-200"></div>
-                          <div className="flex-1">
-                            <p className="font-medium text-sm">{post.username}</p>
-                            <p className="text-xs text-gray-500">{post.location}</p>
+                        <CardHeader className="p-3 sm:p-4 flex items-center space-x-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">{post.username}</p>
+                            <p className="text-xs text-gray-500 truncate">{post.location}</p>
                           </div>
-                          <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <Button variant="ghost" size="icon" className="h-8 w-8 flex-shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                               <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                             </svg>
                           </Button>
                         </CardHeader>
                         
-                        <img src={post.src} alt={post.alt} className="w-full aspect-square object-cover" />
+                        <img 
+                          src={post.src} 
+                          alt={post.alt} 
+                          className="w-full aspect-square object-cover" 
+                          loading="lazy"
+                        />
                         
-                        <CardContent className="p-4">
-                          <div className="flex items-center space-x-4 mb-2">
+                        <CardContent className="p-3 sm:p-4">
+                          <div className="flex items-center space-x-2 sm:space-x-4 mb-2">
                             <Button variant="ghost" size="icon" className="h-8 w-8">
                               <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
@@ -191,21 +205,21 @@ const Dashboard = () => {
                             </Button>
                           </div>
                           <p className="font-medium text-sm mb-1">{post.likes} likes</p>
-                          <p className="text-sm">
+                          <p className="text-sm break-words">
                             <span className="font-medium">{post.username}</span> {post.caption}
                           </p>
                           <p className="text-xs text-gray-500 mt-1">View all {post.comments} comments</p>
                           <p className="text-xs text-gray-400 mt-2">{post.timeAgo}</p>
                         </CardContent>
                         
-                        <CardFooter className="px-4 py-3 border-t border-gray-100">
+                        <CardFooter className="px-3 py-3 sm:px-4 sm:py-3 border-t border-gray-100">
                           <div className="flex items-center w-full">
                             <input
                               type="text"
                               placeholder="Add a comment..."
                               className="w-full text-sm bg-transparent focus:outline-none"
                             />
-                            <Button variant="ghost" size="sm" className="text-blue-500 font-medium">Post</Button>
+                            <Button variant="ghost" size="sm" className="text-blue-500 font-medium flex-shrink-0">Post</Button>
                           </div>
                         </CardFooter>
                       </Card>
@@ -217,28 +231,26 @@ const Dashboard = () => {
             
             {/* Chat sidebar with its own scroll area - conditionally shown and fixed position */}
             {showChat && (
-              <div className={`w-72 border-l border-gray-200 bg-white flex-shrink-0 overflow-hidden
+              <div className={`w-full sm:w-72 border-l border-gray-200 bg-white flex-shrink-0 overflow-hidden
                 ${isMobile ? 'fixed right-0 top-0 h-full z-40' : 'h-[calc(100vh-4rem)]'}
               `}>
-                <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                <div className="p-3 sm:p-4 border-b border-gray-200 flex items-center justify-between">
                   <h2 className="font-semibold">Messages</h2>
-                  {isMobile && (
-                    <Button variant="ghost" size="sm" onClick={() => setShowChat(false)}>
-                      <X className="h-4 w-4" />
-                    </Button>
-                  )}
+                  <Button variant="ghost" size="sm" onClick={() => setShowChat(false)}>
+                    <X className="h-4 w-4" />
+                  </Button>
                 </div>
                 
                 <ScrollArea className="h-full">
                   <div className="divide-y">
                     {[1, 2, 3, 4, 5].map((i) => (
-                      <div key={i} className="p-4 hover:bg-gray-50 cursor-pointer">
+                      <div key={i} className="p-3 sm:p-4 hover:bg-gray-50 cursor-pointer">
                         <div className="flex items-center">
-                          <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
-                          <div className="flex-1">
+                          <div className="w-10 h-10 rounded-full bg-gray-200 mr-3 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="font-medium text-sm">user_{i}</p>
-                              <span className="text-xs text-gray-400">2h</span>
+                              <p className="font-medium text-sm truncate">user_{i}</p>
+                              <span className="text-xs text-gray-400 ml-2 flex-shrink-0">2h</span>
                             </div>
                             <p className="text-xs text-gray-500 truncate">Last message preview...</p>
                           </div>

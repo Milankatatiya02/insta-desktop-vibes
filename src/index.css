@@ -63,6 +63,15 @@
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03";
   }
+  
+  img {
+    @apply max-w-full h-auto;
+  }
+  
+  /* Improved focus styles for accessibility */
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary/50;
+  }
 }
 
 @layer utilities {
@@ -131,5 +140,41 @@
   
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-gray-400;
+  }
+  
+  /* Hide scrollbar for mobile devices */
+  @media (max-width: 640px) {
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+  }
+  
+  /* Responsive typography */
+  .text-responsive {
+    @apply text-base sm:text-lg md:text-xl lg:text-2xl;
+  }
+  
+  .text-responsive-title {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold;
+  }
+  
+  /* Responsive padding */
+  .p-responsive {
+    @apply p-3 sm:p-4 md:p-6 lg:p-8;
+  }
+  
+  /* Responsive margin */
+  .m-responsive {
+    @apply m-3 sm:m-4 md:m-6 lg:m-8;
+  }
+  
+  /* Responsive gap */
+  .gap-responsive {
+    @apply gap-3 sm:gap-4 md:gap-6 lg:gap-8;
   }
 }

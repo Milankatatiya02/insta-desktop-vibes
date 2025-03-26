@@ -36,13 +36,14 @@ const Image: React.FC<ImageProps> = ({ src, alt, aspectRatio = 'aspect-square' }
           isLoaded ? 'opacity-100' : 'opacity-0'
         )}
         onLoad={() => setIsLoaded(true)}
+        loading="lazy"
       />
       
       <div className={cn(
         'absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 transition-opacity duration-300',
         isHovered && 'opacity-100'
       )}>
-        <div className="px-4 py-2 text-white text-sm font-medium">View</div>
+        <div className="px-3 sm:px-4 py-1 sm:py-2 text-white text-xs sm:text-sm font-medium">View</div>
       </div>
     </div>
   );
@@ -55,7 +56,7 @@ interface ImageGridProps {
 
 const ImageGrid: React.FC<ImageGridProps> = ({ images, className }) => {
   return (
-    <div className={cn('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4', className)}>
+    <div className={cn('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4', className)}>
       {images.map((image, index) => (
         <FadeInSection key={index} delay={100 * index} direction="up">
           <Image src={image.src} alt={image.alt} />
