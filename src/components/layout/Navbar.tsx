@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { Home, Search, Compass, Heart, User } from 'lucide-react';
+import { Home, Search, Compass, Heart, User, PlusSquare, MessageSquare } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -23,6 +24,7 @@ const Navbar = () => {
     { label: 'Home', icon: <Home size={22} />, path: '/' },
     { label: 'Search', icon: <Search size={22} />, path: '/search' },
     { label: 'Explore', icon: <Compass size={22} />, path: '/explore' },
+    { label: 'Messages', icon: <MessageSquare size={22} />, path: '/chat' },
     { label: 'Notifications', icon: <Heart size={22} />, path: '/notifications' },
     { label: 'Profile', icon: <User size={22} />, path: '/profile' },
   ];
@@ -53,6 +55,10 @@ const Navbar = () => {
               <span className="hidden lg:inline text-sm">{item.label}</span>
             </NavLink>
           ))}
+          <Button className="flex items-center gap-2 md:ml-4">
+            <PlusSquare size={20} />
+            <span className="hidden lg:inline">Create</span>
+          </Button>
         </nav>
         
         <nav className="md:hidden flex items-center space-x-5">
@@ -68,6 +74,9 @@ const Navbar = () => {
               {item.icon}
             </NavLink>
           ))}
+          <Button size="icon">
+            <PlusSquare size={20} />
+          </Button>
         </nav>
       </div>
     </header>
