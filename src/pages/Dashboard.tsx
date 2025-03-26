@@ -41,7 +41,7 @@ const Dashboard = () => {
       username: 'fitness_journey',
       location: 'Home Gym',
       likes: 532,
-      caption: 'Today's workout was intense but worth it! Remember consistency is key. #fitness #workout #motivation',
+      caption: "Today's workout was intense but worth it! Remember consistency is key. #fitness #workout #motivation",
       timeAgo: '1 DAY AGO',
       comments: 28
     },
