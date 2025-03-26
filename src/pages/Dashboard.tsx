@@ -4,10 +4,12 @@ import { NavLink } from 'react-router-dom';
 import { Home, Users, FolderTree, MessageSquare, Search, Bell, PlusSquare } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
-import ImageGrid from '@/components/ui/ImageGrid';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Dashboard = () => {
   const [showChat, setShowChat] = useState(false);
+  const isMobile = useIsMobile();
 
   // Sample posts for the feed
   const posts = [
@@ -34,13 +36,14 @@ const Dashboard = () => {
     { path: '/community', label: 'Community', icon: <Users className="h-5 w-5" /> },
     { path: '/category', label: 'Categories', icon: <FolderTree className="h-5 w-5" /> },
     { path: '/chat', label: 'Messages', icon: <MessageSquare className="h-5 w-5" /> },
+    { path: '/profile', label: 'Profile', icon: <User className="h-5 w-5" /> },
   ];
 
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full bg-gray-50">
         {/* Sidebar */}
-        <Sidebar className="border-r border-gray-200">
+        <Sidebar className="border-r border-gray-200 z-30">
           <SidebarHeader className="p-4 border-b">
             <h1 className="text-xl font-semibold">Instagram</h1>
           </SidebarHeader>
@@ -65,8 +68,8 @@ const Dashboard = () => {
         {/* Main content */}
         <div className="flex-1 flex flex-col">
           {/* Top navigation */}
-          <div className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between">
-            <div className="relative w-64">
+          <div className="bg-white border-b border-gray-200 py-3 px-6 flex items-center justify-between sticky top-0 z-20">
+            <div className="relative w-full max-w-xs">
               <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
@@ -86,14 +89,14 @@ const Dashboard = () => {
               <Button variant="outline" size="icon" className="rounded-full">
                 <Bell className="h-5 w-5" />
               </Button>
-              <div className="h-8 w-8 rounded-full bg-gray-200"></div>
+              <NavLink to="/profile" className="h-8 w-8 rounded-full bg-gray-200 flex-shrink-0"></NavLink>
             </div>
           </div>
 
           {/* Main content area */}
           <div className="flex flex-1 overflow-hidden">
             {/* Feed */}
-            <div className="flex-1 overflow-auto p-6">
+            <ScrollArea className="flex-1 p-6">
               <div className="max-w-2xl mx-auto">
                 {/* Create post button */}
                 <Button className="w-full mb-6 flex items-center justify-center gap-2">
@@ -157,28 +160,37 @@ const Dashboard = () => {
                   ))}
                 </div>
               </div>
-            </div>
+            </ScrollArea>
             
-            {/* Chat sidebar - conditionally shown */}
+            {/* Chat sidebar - conditionally shown and fixed position */}
             {showChat && (
-              <div className="w-80 border-l border-gray-200 bg-white overflow-auto">
-                <div className="p-4 border-b border-gray-200">
+              <div className={`w-80 border-l border-gray-200 bg-white flex-shrink-0 
+                ${isMobile ? 'fixed right-0 top-0 h-full z-40' : ''}
+              `}>
+                <div className="p-4 border-b border-gray-200 flex items-center justify-between">
                   <h2 className="font-semibold">Messages</h2>
+                  {isMobile && (
+                    <Button variant="ghost" size="sm" onClick={() => setShowChat(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
                 
-                <div className="divide-y">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div key={i} className="p-4 hover:bg-gray-50 cursor-pointer">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
-                        <div>
-                          <p className="font-medium text-sm">user_{i}</p>
-                          <p className="text-xs text-gray-500 truncate">Last message preview...</p>
+                <ScrollArea className="h-[calc(100vh-4rem)]">
+                  <div className="divide-y">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <div key={i} className="p-4 hover:bg-gray-50 cursor-pointer">
+                        <div className="flex items-center">
+                          <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
+                          <div>
+                            <p className="font-medium text-sm">user_{i}</p>
+                            <p className="text-xs text-gray-500 truncate">Last message preview...</p>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                </ScrollArea>
               </div>
             )}
           </div>

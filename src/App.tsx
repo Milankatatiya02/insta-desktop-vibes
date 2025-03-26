@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound";
 import CommunityPage from "./pages/CommunityPage";
 import CategoryPage from "./pages/CategoryPage";
 import ChatPage from "./pages/ChatPage";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ const App = () => (
           <Route path="/community" element={<CommunityPage />} />
           <Route path="/category" element={<CategoryPage />} />
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

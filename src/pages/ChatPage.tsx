@@ -1,18 +1,23 @@
 
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Users, FolderTree, MessageSquare, Search, Bell, Send, Paperclip, Smile } from 'lucide-react';
+import { Home, Users, FolderTree, MessageSquare, Search, Bell, Send, Paperclip, Smile, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ChatPage = () => {
   const [selectedChat, setSelectedChat] = useState(2); // Default selected chat
+  const [showChatList, setShowChatList] = useState(true);
+  const isMobile = useIsMobile();
   
   const sidebarLinks = [
     { path: '/', label: 'Home', icon: <Home className="h-5 w-5" /> },
     { path: '/community', label: 'Community', icon: <Users className="h-5 w-5" /> },
     { path: '/category', label: 'Categories', icon: <FolderTree className="h-5 w-5" /> },
     { path: '/chat', label: 'Messages', icon: <MessageSquare className="h-5 w-5" /> },
+    { path: '/profile', label: 'Profile', icon: <User className="h-5 w-5" /> },
   ];
 
   const chats = [
@@ -34,8 +39,22 @@ const ChatPage = () => {
     { id: 8, sender: 'me', text: 'Will do! I\'ve been wanting to get better at night shots.', time: '10:35 AM' },
   ];
 
+  // Toggle chat list visibility on mobile
+  const toggleChatList = () => {
+    setShowChatList(!showChatList);
+  };
+
+  const handleSelectChat = (chatId) => {
+    setSelectedChat(chatId);
+    if (isMobile) {
+      setShowChatList(false);
+    }
+  };
+
+  const selectedChatData = chats.find(chat => chat.id === selectedChat);
+
   return (
-    <SidebarProvider defaultOpen={true}>
+    <SidebarProvider defaultOpen={!isMobile}>
       <div className="flex min-h-screen w-full bg-gray-50">
         {/* Sidebar */}
         <Sidebar className="border-r border-gray-200">
@@ -62,76 +81,92 @@ const ChatPage = () => {
 
         {/* Chat interface */}
         <div className="flex-1 flex">
-          {/* Chat list */}
-          <div className="w-80 border-r border-gray-200 bg-white">
-            <div className="p-4 border-b border-gray-200">
-              <h2 className="font-semibold">Messages</h2>
-            </div>
-            
-            {/* Search chats */}
-            <div className="p-4">
-              <div className="relative">
-                <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search messages"
-                  className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
-                />
+          {/* Chat list - conditionally shown on mobile */}
+          {(!isMobile || showChatList) && (
+            <div className={`${isMobile ? 'w-full' : 'w-80'} border-r border-gray-200 bg-white`}>
+              <div className="p-4 border-b border-gray-200 flex items-center justify-between">
+                <h2 className="font-semibold">Messages</h2>
+                {isMobile && selectedChat && (
+                  <Button variant="ghost" size="sm" onClick={toggleChatList}>
+                    <X className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
-            </div>
-            
-            {/* Chat list */}
-            <div className="divide-y">
-              {chats.map((chat) => (
-                <div 
-                  key={chat.id} 
-                  className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedChat === chat.id ? 'bg-gray-100' : ''}`}
-                  onClick={() => setSelectedChat(chat.id)}
-                >
-                  <div className="flex items-center">
-                    <div className="relative">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
-                      {chat.online && (
-                        <div className="absolute bottom-0 right-3 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex justify-between">
-                        <p className="font-medium text-sm truncate">{chat.name}</p>
-                        <p className="text-xs text-gray-500">{chat.time}</p>
-                      </div>
-                      <div className="flex justify-between mt-1">
-                        <p className="text-xs text-gray-500 truncate">{chat.message}</p>
-                        {chat.unread > 0 && (
-                          <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded-full">
-                            {chat.unread}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </div>
+              
+              {/* Search chats */}
+              <div className="p-4">
+                <div className="relative">
+                  <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search messages"
+                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-gray-100 text-sm focus:outline-none focus:ring-1 focus:ring-gray-300"
+                  />
                 </div>
-              ))}
+              </div>
+              
+              {/* Chat list */}
+              <ScrollArea className="h-[calc(100vh-8rem)]">
+                <div className="divide-y">
+                  {chats.map((chat) => (
+                    <div 
+                      key={chat.id} 
+                      className={`p-4 hover:bg-gray-50 cursor-pointer ${selectedChat === chat.id ? 'bg-gray-100' : ''}`}
+                      onClick={() => handleSelectChat(chat.id)}
+                    >
+                      <div className="flex items-center">
+                        <div className="relative">
+                          <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
+                          {chat.online && (
+                            <div className="absolute bottom-0 right-3 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex justify-between">
+                            <p className="font-medium text-sm truncate">{chat.name}</p>
+                            <p className="text-xs text-gray-500">{chat.time}</p>
+                          </div>
+                          <div className="flex justify-between mt-1">
+                            <p className="text-xs text-gray-500 truncate">{chat.message}</p>
+                            {chat.unread > 0 && (
+                              <span className="bg-red-500 text-white text-xs font-medium px-1.5 py-0.5 rounded-full">
+                                {chat.unread}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </ScrollArea>
             </div>
-          </div>
+          )}
           
           {/* Chat content */}
-          {selectedChat ? (
+          {selectedChat && (!isMobile || !showChatList) ? (
             <div className="flex-1 flex flex-col">
               {/* Chat header */}
               <div className="p-4 border-b border-gray-200 bg-white flex items-center">
+                {isMobile && (
+                  <Button variant="ghost" size="icon" className="mr-2" onClick={toggleChatList}>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </Button>
+                )}
                 <div className="relative">
                   <div className="w-10 h-10 rounded-full bg-gray-200 mr-3"></div>
                   <div className="absolute bottom-0 right-3 w-3 h-3 rounded-full bg-green-500 border-2 border-white"></div>
                 </div>
                 <div>
-                  <p className="font-medium">Jane Smith</p>
+                  <p className="font-medium">{selectedChatData?.name || 'Chat'}</p>
                   <p className="text-xs text-gray-500">Online</p>
                 </div>
               </div>
               
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-4 bg-gray-50">
+              <ScrollArea className="flex-1 p-4 bg-gray-50">
                 <div className="max-w-3xl mx-auto space-y-4">
                   {messages.map((message) => (
                     <div 
@@ -156,7 +191,7 @@ const ChatPage = () => {
                     </div>
                   ))}
                 </div>
-              </div>
+              </ScrollArea>
               
               {/* Message input */}
               <div className="p-4 border-t border-gray-200 bg-white">
