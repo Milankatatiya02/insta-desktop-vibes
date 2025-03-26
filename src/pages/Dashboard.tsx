@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, Users, FolderTree, MessageSquare, Search, Bell, PlusSquare } from 'lucide-react';
+import { Home, Users, FolderTree, MessageSquare, Search, Bell, PlusSquare, User, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SidebarProvider, Sidebar, SidebarContent, SidebarHeader, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { ScrollArea } from '@/components/ui/scroll-area';
